@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: cloud-strategy-spring-uat
+server:
+  port: 8080

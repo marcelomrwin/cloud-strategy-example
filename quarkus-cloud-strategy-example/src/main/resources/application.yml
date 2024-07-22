@@ -1,0 +1,17 @@
+"%dev":
+  quarkus:
+    http:
+      port: 8081
+quarkus:
+  native:
+    container-build: true
+  kubernetes-client:
+    trust-certs: true
+  openshift:
+    env:
+      mapping:
+        app-profile:
+          from-configmap: app-config
+          with-key: profile
+app:
+  env: ${APP_PROFILE:dev}

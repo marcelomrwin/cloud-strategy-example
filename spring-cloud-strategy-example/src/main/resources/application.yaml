@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: cloud-strategy-example
+#  profiles:
+#    active: @spring.profiles.active@
+server:
+  http2:
+    enabled: true
+  port: 8082
+app:
+  environment: ${ENV_VALUE:default}
