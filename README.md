@@ -155,9 +155,11 @@ oc get is -o custom-columns=NAME:.metadata.name,VERSION:.status.tags[0].tag
 
 The result should be something similar to the one below:
 
-> NAME                             VERSION
-> quarkus-cloud-strategy-example   1.0-SNAPSHOT
-> ubi-quarkus-native-binary-s2i    1.0
+```shell
+NAME                             VERSION
+quarkus-cloud-strategy-example   1.0-SNAPSHOT
+ubi-quarkus-native-binary-s2i    1.0
+```
 
 Let's create a new application using image `quarkus-cloud-strategy-example` in the *prod* project
 
@@ -211,9 +213,12 @@ oc get route spring-cloud-strategy-example --template='{{ .spec.host }}' -n prod
 ```shell
 oc adm top pod -n prod
 ```
-> NAME                                              CPU(cores)   MEMORY(bytes)
-> quarkus-cloud-strategy-example-7dc755b8cb-b9zpw   0m           15Mi
-> spring-cloud-strategy-example-78c9c45f8c-cmg2f    1m           224Mi
+
+```shell
+NAME                                              CPU(cores)   MEMORY(bytes)
+quarkus-cloud-strategy-example-7dc755b8cb-b9zpw   0m           15Mi 
+spring-cloud-strategy-example-78c9c45f8c-cmg2f    1m           224Mi
+```
 
 
 ## References
