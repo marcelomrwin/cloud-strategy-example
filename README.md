@@ -207,7 +207,7 @@ oc expose svc/spring-cloud-strategy-example -n prod
 oc get route spring-cloud-strategy-example --template='{{ .spec.host }}' -n prod
 ```
 
-## Resources consumptions
+## Resource Consumption
 
 <strong>ℹ️ Info:</strong> Finally, observe the consumption of the native Quarkus application compared to the Spring Boot version.
 ```shell
