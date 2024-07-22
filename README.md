@@ -179,8 +179,42 @@ curl http://quarkus-cloud-strategy-example-prod.<OPENSHIFT_DOMAIN>/api
 We will use the [jkube](https://eclipse.dev/jkube/) plugin to deploy to Openshift.
 
 ```shell
-./mvnw clean package oc:resource -DskipTests -Popenshift
+./mvnw clean package oc:build oc:resource oc:apply -Popenshift -DskipTests
 ```
+
+Consult the route created by openshift using the command below:
+
+```shell
+oc get route spring-cloud-strategy-example --template='{{ .spec.host }}'
+```
+
+<strong>ℹ️ Info:</strong> You can conduct the same tests performed for the quarkus version, just adjust the URL for the spring boot version.
+
+```shell
+curl http://spring-cloud-strategy-example-uat.<OPENSHIFT_DOMAIN>/api
+```
+
+Let's create a new application using image `spring-cloud-strategy-example` in the *prod* project
+
+```shell
+oc new-app -n prod --name=spring-cloud-strategy-example uat/spring-cloud-strategy-example:latest
+oc delete -n prod svc/spring-cloud-strategy-example
+oc expose -n prod deployment/spring-cloud-strategy-example --port=8080
+oc patch -n prod deployment spring-cloud-strategy-example --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/env/-", "value": {"name": "SPRING_PROFILES_ACTIVE", "valueFrom": {"configMapKeyRef": {"name": "app-config", "key": "profile"}}}}]'
+oc expose svc/spring-cloud-strategy-example -n prod
+oc get route spring-cloud-strategy-example --template='{{ .spec.host }}' -n prod
+```
+
+## Resources consumptions
+
+<strong>ℹ️ Info:</strong> Finally, observe the consumption of the native Quarkus application compared to the Spring Boot version.
+```shell
+oc adm top pod -n prod
+```
+> NAME                                              CPU(cores)   MEMORY(bytes)
+> quarkus-cloud-strategy-example-7dc755b8cb-b9zpw   0m           15Mi
+> spring-cloud-strategy-example-78c9c45f8c-cmg2f    1m           224Mi
+
 
 ## References
 * https://quarkus.io/guides/
@@ -188,6 +222,7 @@ We will use the [jkube](https://eclipse.dev/jkube/) plugin to deploy to Openshif
 * https://quarkus.io/guides/deploying-to-openshift
 * https://quarkus.io/guides/building-native-image
 * https://quarkus.io/guides/config-reference
+* https://eclipse.dev/jkube/
 * https://docs.spring.io/spring-framework/reference/core/beans/environment.html
 * https://www.springcloud.io/post/2022-04/spring-selective-injection
 * https://spring.io/guides/gs/testing-web
